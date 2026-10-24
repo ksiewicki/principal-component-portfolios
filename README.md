@@ -42,12 +42,15 @@ The model is estimated on 2024 returns and evaluated on 2025 observations throug
 ### 2. Time-conditioned flexible probabilities
 
 Historical observations receive exponentially decaying weights,
+
 $$
 p_t \propto \exp\left(-\frac{\ln 2}{h}a_t\right),
 $$
+
 where $a_t$ is the scenario age and $h$ is the half-life. The current implementation uses a half-life equal to one quarter of the 2024 sample length (approximately 63 trading days).
 
 The weighted mean and covariance are:
+
 $$
 \widehat\mu_X = \sum_t p_t X_t,
 \qquad
@@ -59,17 +62,21 @@ The entropy-based effective number of scenarios (ENS) measures the concentration
 ### 3. Correlation-based PCA
 
 To prevent higher-volatility stocks from mechanically dominating the decomposition, the covariance matrix is standardized using the diagonal volatility matrix $D$. This makes PCA analyze standardized co-movement rather than absolute volatility magnitude:
+
 $$
 C = D^{-1}\widehat\Sigma_XD^{-1}.
 $$
 
 The eigendecomposition,
+
 $$
 C = E\Lambda E^{\top},
 $$
+
 identifies the principal directions of standardized return variation. The project retains the first two components as an intentionally low-dimensional representation.
 
 For the retained eigenvectors $E_k$, the factor-loading and factor-extraction matrices are:
+
 $$
 \widehat\beta = D E_k,
 \qquad
@@ -77,6 +84,7 @@ $$
 $$
 
 Factor realizations and reconstructed returns are then:
+
 $$
 \widehat Z_t = \widehat\gamma(X_t-\widehat\mu_X),
 \qquad
