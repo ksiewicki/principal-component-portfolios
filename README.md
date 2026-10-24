@@ -26,10 +26,13 @@ Adjusted closing prices are downloaded directly with `yfinance`; no separate mar
 ### 1. Return construction
 
 For stock $i$, the daily linear return is,
+
 $$
 R_t^{(i)} = \frac{P_t^{(i)}}{P_{t-1}^{(i)}} - 1,
 $$
+
 and the multivariate return vector is,
+
 $$
 X_t = \begin{pmatrix}R_t^{(1)} & \cdots & R_t^{(14)}\end{pmatrix}^{\top}.
 $$
@@ -42,7 +45,7 @@ Historical observations receive exponentially decaying weights,
 $$
 p_t \propto \exp\left(-\frac{\ln 2}{h}a_t\right),
 $$
-where $a_t$ is the scenario age and $h$ is the half-life. The current implementation uses a half-life equal to one quarter of the 2024 sample length (approximately 63 trading-observation intervals).
+where $a_t$ is the scenario age and $h$ is the half-life. The current implementation uses a half-life equal to one quarter of the 2024 sample length (approximately 63 trading days).
 
 The weighted mean and covariance are:
 $$
@@ -105,11 +108,7 @@ principal-component-portfolios/
 ├── Principal_Component_Portfolios.ipynb
 ├── README.md
 ├── requirements.txt
-├── .gitignore
-└── assets/
-    ├── cumulative_explained_variance.png
-    ├── oos_reconstruction_r2.png
-    └── factor_weights_and_returns.png
+└── .gitignore
 ```
 
 ## Installation
@@ -162,7 +161,6 @@ Historical adjusted-price data are retrieved from `yfinance` at runtime. Because
 - The retained two-factor representation is chosen for interpretation rather than claimed to be an optimal factor count.
 - The 2025 analysis evaluates whether a fixed 2024 factor subspace continues to describe later realized returns. It is not a trading backtest or a forecast of returns before they occur.
 - The universe is concentrated in technology and technology-adjacent equities, so the leading common component may reflect broader equity-market exposure as well as sector-specific behavior.
-- Historical adjusted-price data downloaded from `yfinance` can be revised by the data provider, so rerunning the notebook later may produce small differences from the saved outputs.
 - Factor-extraction weights are coefficients used to construct the PCA factors; they are not percentages of capital in a fully funded portfolio. A tradable implementation would require explicit normalization, financing, transaction-cost, and portfolio-constraint assumptions.
 
 ## Possible extensions
