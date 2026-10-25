@@ -1,6 +1,6 @@
 # Principal Component Portfolios of Technology Stocks
 
-A principal-component linear factor model (PCA-LFM) for analyzing common return variation across 14 technology and technology-adjacent equities.
+A principal-component linear factor model (PCA-LFM) for analyzing common return variation across 14 technology and technology-adjacent equities and constructing factor-mimicking portfolios for the leading principal components.
 
 The project estimates a low-dimensional factor structure from 2024 daily stock returns using exponentially time-decaying flexible probabilities, then evaluates how well the fixed 2024 factor subspace reconstructs realized returns from January through September 2025.
 
@@ -13,7 +13,7 @@ The notebook asks four main questions:
 1. How much of the joint return variation across the equity universe is concentrated in a small number of principal directions?
 2. How does volatility-standardizing the returns affect the PCA representation?
 3. Does a factor structure estimated from 2024 remain useful for describing returns observed in 2025?
-4. Which stocks contribute most strongly to the leading principal-component factors?
+4. Which stocks contribute most strongly to the leading principal-component factors, and how can those factor directions be represented as factor-mimicking portfolios?
 
 ## Equity universe
 
@@ -98,7 +98,24 @@ The 2024-estimated mean, factor loadings, and extraction matrix are held fixed w
 - realized-vs-reconstructed return plots,
 - residual time series,
 - stock-level reconstruction $R^2$, and
-- factor-extraction weights and factor-return series.
+- factor-extraction weights, factor-mimicking portfolio weights, and centered portfolio-return series.
+
+### 5. Factor-mimicking portfolios
+
+The rows of the factor-extraction matrix describe how centered stock returns combine to form each retained principal-component factor. To give these directions a portfolio interpretation, the extraction weights are normalized so that the absolute portfolio weights sum to one:
+
+$$
+w_j^{FMP} = \frac{\widehat \gamma_j}{\sum_i | \widehat \gamma_{j,i} |}.
+$$
+
+Thus,
+
+$$
+\sum_i | w_{j,i}^{FMP} | = 1
+$$
+
+The resulting weights preserve the signs and relative magnitudes of the factor-extraction coefficients while expressing them as long and short equity exposures. The centered return of each factor-mimicking portfolio reproduces the corresponding principal-component factor up to a constant scaling factor.
+
 
 ## Selected results
 
@@ -107,7 +124,7 @@ The 2024-estimated mean, factor loadings, and extraction matrix are held fixed w
 - **PC1 explains approximately 36.92%** of standardized 2024 return variance.
 - **PC1 + PC2 explain approximately 46.35%**.
 - The first **8 components explain approximately 81.92%**.
-- In the 2025 reconstruction exercise, stock-level \(R^2\) ranges from approximately **0.20 to 0.72**. AMZN and META are among the best reconstructed stocks, while CRM and UBER retain substantially more residual variation under the two-factor specification.
+- In the 2025 reconstruction exercise, stock-level $R^2$ ranges from approximately **0.20 to 0.72**. AMZN and META are among the best reconstructed stocks, while CRM and UBER retain substantially more residual variation under the two-factor specification.
 
 ## Repository structure
 
@@ -169,7 +186,7 @@ Historical adjusted-price data are retrieved from `yfinance` at runtime. Because
 - The retained two-factor representation is chosen for interpretation rather than claimed to be an optimal factor count.
 - The 2025 analysis evaluates whether a fixed 2024 factor subspace continues to describe later realized returns. It is not a trading backtest or a forecast of returns before they occur.
 - The universe is concentrated in technology and technology-adjacent equities, so the leading common component may reflect broader equity-market exposure as well as sector-specific behavior.
-- Factor-extraction weights are coefficients used to construct the PCA factors; they are not percentages of capital in a fully funded portfolio. A tradable implementation would require explicit normalization, financing, transaction-cost, and portfolio-constraint assumptions.
+- Factor-extraction weights are coefficients used to construct the PCA factors. The project normalizes these coefficients to construct factor-mimicking portfolios, but these portfolios are not intended to represent fully specified tradable strategies. A tradable implementation would require explicit financing, rebalancing, transaction cost, and portfolio-constraint assumptions.
 
 ## Possible extensions
 
